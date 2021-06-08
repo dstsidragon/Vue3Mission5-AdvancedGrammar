@@ -3,17 +3,20 @@ import loginOut from './components/loginOut.js';
 import pagination from './components/pagination.js';
 import viewContent from './components/viewContentModal.js';
 
-// Object.keys(VeeValidateRules).forEach(rule => {
-//     if (rule !== 'default') {
-//       VeeValidate.defineRule(rule, VeeValidateRules[rule]);
-//     }
-//   });
-//   VeeValidateI18n.loadLocaleFromURL('./zh_TW.json');
 
-// VeeValidate.configure({
-//   generateMessage: VeeValidateI18n.localize('zh_TW'),
-//   validateOnInput: true, // 調整為輸入字元立即進行驗證
-// });
+
+
+Object.keys(VeeValidateRules).forEach(rule => {
+    if (rule !== 'default') {
+      VeeValidate.defineRule(rule, VeeValidateRules[rule]);
+    }
+  });
+  VeeValidateI18n.loadLocaleFromURL('./zh_TW.json');
+
+VeeValidate.configure({
+  generateMessage: VeeValidateI18n.localize('zh_TW'),
+  validateOnInput: true, // 調整為輸入字元立即進行驗證
+});
 
 
 createApp({
@@ -352,6 +355,10 @@ createApp({
         checkOutItem(item) {
             console.log(item)
         },
+        isPhone(value) {
+            const phoneNumber = /^(09)[0-9]{8}$/
+            return phoneNumber.test(value) ? true : '需要正確的電話號碼'
+          }
 
     },
     watch: {
@@ -454,9 +461,9 @@ createApp({
         },
     })
    
-    // .component('VForm', VeeValidate.Form)
-    // .component('VField', VeeValidate.Field)
-    // .component('ErrorMessage', VeeValidate.ErrorMessage)
+    .component('VForm', VeeValidate.Form)
+    .component('VField', VeeValidate.Field)
+    .component('ErrorMessage', VeeValidate.ErrorMessage)
    
 
     .mount("#app");
