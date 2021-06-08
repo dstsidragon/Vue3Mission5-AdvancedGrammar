@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon"
+    href="https://cdn1.iconfinder.com/data/icons/social-networks-15/512/LinkedIn_social_network_logo-256.png">
+  <title>API串接|管理</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/utily.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+
+
+    <div class="d-flex justify-content-end ">
+      <ul class="nav nav-pills ">
+        <li class="nav-item">
+          <a id="user" class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">{{userName}}</a>
+        </li>
+        <li class="nav-item">
+          <button id="btn-verification" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#verification">
+            更換PATH
+          </button>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            切換頁面
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="index.html">客戶購物</a></li>
+            <li><a class="dropdown-item" href="background.html">管理控制台</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a v-if="login_status" id="chkSignOut" class="btn btn-danger" data-bs-toggle="modal"
+            data-bs-target="#signOutUser">
+            登出
+          </a>
+          <a v-else id="chkSignOut" class="btn btn-success" href="login.html">
+            登入
+          </a>
+        </li>
+      </ul>
+    </div>
+
+
+
+
+
+    <!-- 驗證Modal -->
+    <verification-modal @emitchk-path="chkPath"></verification-modal>
+
+
+    <!-- 登出Modal -->
+    <login-out @sign-out-admin="signOutAdmin"></login-out>
+
+
+
+
+
+
+    <!-- 新增產品 start-->
+    <div class="container mt-5">
+      <!-- Button trigger modal -->
+      <p>
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addProduct"
+          aria-expanded="false" aria-controls="addProduct" @click="clearProductData">
+          新增產品
+        </button>
+      </p>
+      <button class="btn btn-primary" type="button" @click="OneKeyAddDefaultProduct">
+        一鑑輸入預設商品
+      </button>
+      <button :class="{'d-none':!this.productDataAll}" class="btn btn-danger" type="button" @click="OneKeyDelAllProduct">
+        一鑑刪除全部商品
+      </button>
+
+      <!-- Modal -->
+      <add-product-modal ref="UpLoadImg" :add-product="addProduct" @emit-product-data="addPrductData">
+      </add-product-modal>
+    </div>
+    <!-- 新增產品 end-->
+    
+
+    <!-- 產品列表 -->
+    <div class="container mt_5p ">
+      <div class="container">
+        <table class="table mt-4 row">
+          <thead class='co1-12'>
+            <tr class="row">
+              <th class="col-3 d-none d-md-table-cell">產品圖片</th>
+              <th class="col-3">產品名稱</th>
+              <th class="col-2 col-md-1" width="120">
+                原價
+              </th>
+              <th class="col-2 col-md-1">
+                售價
+              </th>
+              <th class="col-2">
+                是否啟用
+              </th>
+              <th class="col-3 col-md-2">
+                編輯/刪除
+              </th>
+            </tr>
+          </thead>
+          <tbody id="productList">
+            <tr v-for="(item,i) in productData" class="row" :key="'bg_prd'+i">
+
+              <td class="col-3 d-none d-md-table-cell d-flex align-items-center">
+                <img class="prd_img" :src="item.imageUrl" alt="">
+              </td>
+              <td class="col-3  d-flex align-items-center">{{item.title}}
+
+              </td>
+              <td class="col-2 col-md-1 d-flex align-items-center">
+                {{item.origin_price}}
+              </td>
+              <td class="col-2 col-md-1 d-flex align-items-center">
+                {{item.price}}
+              </td>
+              <td class="col-2  d-flex align-items-center">
+                <div class="onoffswitch">
+                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" @click="productEnable"
+                    :id="'myonoffswitch_'+item.id" tabindex="0" v-if="item.is_enabled == 1" checked
+                    :data-is_enabled="item.is_enabled" :data-id="item.id" :data-title="item.title"
+                    :data-category="item.category" :data-unit="item.unit" :data-origin_price="item.origin_price"
+                    :data-price="item.price">
+                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" @click="productEnable"
+                    :id="'myonoffswitch_'+item.id" tabindex="0" v-else :data-is_enabled="item.is_enabled"
+                    :data-id="item.id" :data-title="item.title" :data-category="item.category" :data-unit="item.unit"
+                    :data-origin_price="item.origin_price" :data-price="item.price">
+                  <label class="onoffswitch-label" :for="'myonoffswitch_'+item.id"></label>
+                </div>
+              </td>
+              <td class="col-3 col-md-2 d-flex align-items-center">
+                <button type="button" :id="'redit_'+i" @click="getReditOneData" class="btn btn-sm btn-primary btn-left"
+                  data-action="remove" :data-id="item.id" data-bs-toggle="modal" data-bs-target="#reditModal"> 編輯
+                </button>
+                <button type="button" :id="'del_'+item.id" @click="delOneData" class="btn btn-sm btn-danger btn-right"
+                  data-action="remove" :data-id="item.id"> 刪除 </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+        <p>目前有 {{dataLength}} 項產品</p>
+      </div>
+    </div>
+
+    <!-- 修改商品Modal -->
+    <redit-product-modal :redi-data="rediData" @emit-redit-new-nata="reditOneData"></redit-product-modal>
+
+
+
+    <!-- 分頁 -->
+    <div class="d-flex justify-content-center">
+
+      <pagination :pagination="pagination" @get-product="getProduct"></pagination>
+    </div>
+
+  </div>
+
+
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'
+    integrity='sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw=='
+    crossorigin='anonymous'></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
+    integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
+    integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
+    crossorigin="anonymous"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/background.js" type="module"></script>
+</body>
+
+</html>

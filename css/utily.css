@@ -1,0 +1,28 @@
+/* 推擠 */
+.mt_5p{
+    margin-top: 5% !important;
+}
+.mt_90{
+    margin-top: 90px;
+}
+
+
+/* 區塊陰影 */
+.div_shadow
+{
+box-shadow: -8px -5px 25px #333333;
+-webkit-box-shadow: -8px -5px 25px #333333;
+-moz-box-shadow: -8px -5px 25px #333333;
+}
+
+/* 圓角 */
+.rounded-bottom-50{
+    border-radius: 0 0 0.5rem 0.5rem;
+    border-top: 0;
+}
+.rounded-top-50{
+    border-radius:  0.5rem 0.5rem 0 0;
+    border-bottom: 0;
+
+}
+
