@@ -9,6 +9,7 @@ body {
 }
 ul,li{
   list-style: none;
+  padding-left: 0;
 }
 .onoffswitch {
   position: relative;
@@ -160,4 +161,18 @@ tbody tr:hover {
   white-space: nowrap;
   animation: typing 3s steps(13),
     caret 1s steps(1) infinite;
+}
+.css_wordInput_4 {
+  width: 5em;
+  border-right: .05em solid;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 3s steps(5),
+    caret 1s steps(1) infinite;
+}
+.w_100{
+  width: 100%;
+}
+.w_50{
+  width: 50%;
 }

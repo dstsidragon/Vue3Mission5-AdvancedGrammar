@@ -1,9 +1,9 @@
-import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.11/vue.esm-browser.js';
+// import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.11/vue.esm-browser.js';
 import loginOut from './components/loginOut.js';
 import pagination from './components/pagination.js';
 import viewContent from './components/viewContentModal.js';
-
-
+import  createOrder from './components/createOrderModal.js';
+import viewSeller from './components/viewSellerModal.js';
 
 
 Object.keys(VeeValidateRules).forEach(rule => {
@@ -19,7 +19,7 @@ VeeValidate.configure({
 });
 
 
-createApp({
+const app= Vue.createApp({
     components: {
         //modal-登出
         loginOut,
@@ -27,6 +27,12 @@ createApp({
         pagination,
         //modal-查看內容
         viewContent,
+        //結帳頁面
+        createOrder,
+        //賣家資料
+        viewSeller,
+        //訂單分頁
+        // orderPagination,
     },
     data() {
         return {
@@ -61,6 +67,10 @@ createApp({
             cartList: {},
             //購物車數量
             cartsNum: 0,
+            //訂單資料
+            orderList:{},
+            //訂單分頁
+            orderPagination:{},
         }
     },
     methods: {
@@ -351,14 +361,41 @@ createApp({
 
             this.$refs.createOrder.openModal();
         },
-        //結帳 建立訂單
-        checkOutItem(item) {
-            console.log(item)
+        //取得訂單列表
+        getOrderList(page=1) {
+
+            axios.get(`${api_url}/api/${api_path}/orders?page=${page}`)
+                .then(
+                    res => {
+                        
+                        // console.log(res)
+                        if (res.data.success) {
+                            // console.log(res.data);
+                           this.orderList = res.data; 
+                           this.orderPagination = res.data.pagination;
+                        } else {
+
+                            alert(res.data.message);
+                        }
+                    }
+                )
+                .catch(
+                    err => {
+                        // console.log(err)
+                        alert(res.data.message);
+                    }
+                )
+
         },
-        isPhone(value) {
-            const phoneNumber = /^(09)[0-9]{8}$/
-            return phoneNumber.test(value) ? true : '需要正確的電話號碼'
-          }
+        //查看賣家
+        viewSeller(){
+            // this.$refs.viewSeller.openModal();
+           this.$refs.viewSeller.openModal();
+        },
+        //付款
+        checkOut(){
+            alert("要付款嗎? 先看看賣家是誰好了~")
+        },
 
     },
     watch: {
@@ -379,91 +416,14 @@ createApp({
     },
     mounted() {
 
+        //取得訂單資料
+        this.getOrderList();
     },
 })
-    .component('create-order', {
-        template: `
-        <div class="modal fade" ref="createOrderModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title css_wordInput_13" >請輸入討債資訊 ~ ~ (・ω・)</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                   
-                
-                    <form class="row g-3">
-                    <!-- 姓名 -->
-                    <div class="col-md-6">
-                        <label for="name" class="form-label">姓名:</label>
-                        <input type="text" class="form-control" id="name" placeholder="輸入姓名" v-model="userData.user.name">
-                    </div>
-                    <!-- 信箱 -->
-                    <div class="col-md-6">
-                        <label for="email" class="form-label">Email:</label>
-                        <input type="email" class="form-control" id="email" placeholder="輸入信箱" v-model="userData.user.email">
-                    </div>
-                    
-                    <!-- 電話 -->
-                    <div class="col-md-6">
-                        <label for="number" class="form-label">電話</label>
-                        <input type="tel" class="form-control" id="number" placeholder="輸入電話"  v-model="userData.user.tel">
-                    </div>
-                    <!-- 地址 -->
-                    <div class="col-12">
-                        <label for="address" class="form-label">地址</label>
-                        <input type="text" class="form-control" id="address" placeholder="輸入地址"  v-model="userData.user.address">
-                    </div>
-                    <div class="col-12">
-                    <label for="text" class="form-label">留言:</label>
-                    <textarea type="text" id="text"
-                    placeholder="請輸入想說的話" class="form-control" v-model="userData.message"></textarea>
-                    </div>
-                   
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">下個月在解決你們!</button>
-                    <button type="submit" class="btn btn-primary" @click.prevent="$emit('check-out-item',userData)"  >抱歉!錢錢，我真的需要這些酷東西</button>
-                </div>                                           
-                    </form>
-                   
-              
 
-                </div>
-               
-                </div>
-             </div>
-        </div>`,
-        data() {
-            return {
-                Modat: "",
-                userData: {
-                    user: {
-                        name: "",
-                        email: "",
-                        tel: "",
-                        address: ""
-                    },
-                    message: ""
-                },
-            }
-        },
-        methods: {
-            openModal() {
-                this.Modal.show();
-            },
-            closeModal() {
-                this.Modal.hide();
-            },
-        },
-        mounted() {
-            this.Modal = new bootstrap.Modal(this.$refs.createOrderModal);
-        },
-    })
-   
-    .component('VForm', VeeValidate.Form)
-    .component('VField', VeeValidate.Field)
-    .component('ErrorMessage', VeeValidate.ErrorMessage)
+app.component('VForm', VeeValidate.Form);
+app.component('VField', VeeValidate.Field);
+app.component('ErrorMessage', VeeValidate.ErrorMessage);
    
 
-    .mount("#app");
+app.mount("#app");

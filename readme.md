@@ -6,7 +6,7 @@ hub:  https://github.com/dstsidragon/Vue3Mission5-AdvancedGrammar
 
 v製作 loading 效果
 
-前台頁面串接 API
+V前台頁面串接 API
 
 V產品列表
 V單一產品細節
@@ -18,7 +18,7 @@ V調整購物車產品數量
 注意：
 
 V新增相同產品到購物車時需累加項目
-送出訂單後，購物車需要清除原本項目
+V送出訂單後，購物車需要清除原本項目
 V購物車無產品時不建議發出結帳請求
 前台頁面表單驗證（必要完成），驗證內容包含：
 
