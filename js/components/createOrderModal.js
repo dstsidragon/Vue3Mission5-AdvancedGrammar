@@ -78,7 +78,7 @@ export default{
     methods: {
         openModal() {
             this.Modal.show();
-            // console.log(this.$refs.name)
+            console.log(this.$refs.name)
             // 刷新欄位狀態
             // this.$refs.name.$attrs.class = "form-control";
             // this.$refs.email.$attrs.class = "form-control";

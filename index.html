@@ -214,8 +214,8 @@
             </ul>
             <ul class="d-flex justify-content-between align-items-center fw-bold ">
               <!-- <li><p>目前有{{cartsNum}}項產品</p></li> -->
-              <li>總共 {{item.num}} 項商品</li>
-              <li class="fs-3 "><p>總金額:{{item.total}} 元</p></li>
+              <!-- <li>總共 {{item.product}} 項商品</li> -->
+              <li class="fs-3 text-danger"><p>總計:{{item.total}} 元</p></li>
               <li v-if="item.is_paid" class="fs-3 text-success"><p>已付款</p></li>
               <li v-else class="fs-3 text-danger"><p>未付款</p></li>
          
