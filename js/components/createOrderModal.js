@@ -11,19 +11,19 @@ export default{
                
             
              
-                <v-form v-slot="{ errors }"  class="row g-3">
+                <v-form ref="creatForm" v-slot="{ errors }"  class="row g-3">
                 <!-- 姓名 -->
                 <div class="col-md-6">
-                <label for="name" class="form-label">姓名:</label>
-                <v-field id="name"  name="姓名" type="text" class="form-control " :class="{ 'is-invalid': errors['姓名'] }" placeholder="請輸入 姓名" rules="required" v-model="userData.user.name"></v-field>
-                <error-message ref="name" name="姓名" class="invalid-feedback"></error-message>
+                <label for="name" class="form-label" >姓名:</label>
+                <v-field id="name" ref="name" name="姓名" type="text" class="form-control" :class="{ 'is-invalid': errors['姓名'] }" placeholder="請輸入 姓名" rules="required" v-model="userData.user.name"></v-field>
+                <error-message name="姓名" class="invalid-feedback"></error-message>
                 </div>
 
                 <!-- 電話 -->
                 <div class="col-md-6">
                     <label for="tel" class="form-label">電話</label>
                     <v-field id="tel" ref="tel" name="電話" type="tel" class="form-control" :class="{ 'is-invalid': errors['電話'] }"
-                            placeholder="請輸入 電話" :rules="isPhone" v-model="userData.user.tel"></v-field>
+                            placeholder="請輸入 手機號碼" :rules="isPhone" v-model="userData.user.tel"></v-field>
                     <error-message name="電話" class="invalid-feedback"></error-message>
                     </div>
 
@@ -31,7 +31,7 @@ export default{
                 <!-- 信箱 -->
                 <div class="col-md-6">
                     <label for="email" class="form-label">Email:</label>
-                    <v-field id="email" ref="email" name="信箱" type="tel" class="form-control" :class="{ 'is-invalid': errors['信箱'] }"
+                    <v-field id="email" ref="email" name="信箱" type="email" class="form-control" :class="{ 'is-invalid': errors['信箱'] }"
                             placeholder="請輸入 信箱" :rules="isEmail" v-model="userData.user.email"></v-field>
                     <error-message name="信箱" class="invalid-feedback"></error-message>
                 </div>
@@ -63,7 +63,7 @@ export default{
     </div>`,
     data() {
         return {
-            Modal: "",
+            Modat: "",
             userData: {
                 user: {
                     name: "",
@@ -76,29 +76,21 @@ export default{
         }
     },
     methods: {
+        //開啟modal
         openModal() {
-            this.Modal.show();
-            console.log(this.$refs.name)
-            // 刷新欄位狀態
-            // this.$refs.name.$attrs.class = "form-control";
-            // this.$refs.email.$attrs.class = "form-control";
-            // this.$refs.tel.$attrs.class = "form-control";
-            // this.$refs.address.$attrs.class = "form-control";
-            this.userData.user.name="";
-            this.userData.user.email="";
-            this.userData.user.tel="";
-            this.userData.user.address="";
-            this.userData.message="";
+            //開啟modal
+            this.Modal.show();   
         },
+        //隱藏modal
         closeModal() {
-            // console.log(this.userData);
+            //隱藏modal
             this.Modal.hide();
+            
             const data =    {
                 data: this.userData
             };
 
-            // console.log(data);
-
+            //送出訂單
             axios.post(`${api_url}/api/${api_path}/order`,data)
             .then(
                 res=>{
@@ -121,11 +113,7 @@ export default{
                     alert(err.data.message)
                 }
             )
-            this.userData.user.name="";
-            this.userData.user.email="";
-            this.userData.user.tel="";
-            this.userData.user.address="";
-            this.userData.message="";
+
 
         },
         //刷新購物車列表
@@ -139,12 +127,12 @@ export default{
         //驗證號碼格式
         isPhone(value) {
             const phoneNumber = /^(09)[0-9]{8}$/
-            return phoneNumber.test(value) ? true : '需要正確的電話號碼'
+            return phoneNumber.test(value) ? true : '需要輸入正確的手機號碼'
           },
         //驗證信箱格式
         isEmail(value){
             const mail = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-            return mail.test(value) ? true : '需要正確的信箱'
+            return mail.test(value) ? true : '需要輸入正確的信箱'
         },
     },
     mounted() {

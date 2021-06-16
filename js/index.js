@@ -359,7 +359,9 @@ const app= Vue.createApp({
             this.loadingStatue.sendCart = 1;
             setTimeout(() => { this.loadingStatue.sendCart = ''; }, 1000)
 
+            this.$refs.createOrder.$refs.creatForm.resetForm();
             this.$refs.createOrder.openModal();
+
         },
         //取得訂單列表
         getOrderList(page=1) {
@@ -405,8 +407,6 @@ const app= Vue.createApp({
         },
     },
     created() {
-        // 使用token驗證
-        axios.defaults.headers.common['Authorization'] = this.token;
         //判斷使用者值
         this.chkUserName();
         // 取得商品
